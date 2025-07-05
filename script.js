@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample Page</title>
+    <title>SmartAI Builder Pro - Ready!</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -73,8 +73,17 @@ document.addEventListener('DOMContentLoaded', function() {
             text-align: center;
             max-width: 500px;
         }
-        h1 { color: #333; margin-bottom: 1rem; }
-        p { color: #666; line-height: 1.6; }
+        h1 { 
+            color: #333; 
+            margin-bottom: 1rem; 
+            font-size: 2.5rem;
+        }
+        p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -84,20 +93,55 @@ document.addEventListener('DOMContentLoaded', function() {
             cursor: pointer;
             margin-top: 1rem;
             font-size: 16px;
+            transition: transform 0.2s ease;
         }
-        .btn:hover { transform: translateY(-2px); }
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .feature {
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Welcome to SmartAI Builder</h1>
-        <p>This is sample content to test the preview functionality. Try the refresh and fullscreen buttons above!</p>
-        <button class="btn" onclick="alert('Button clicked!')">Click Me</button>
+        <h1>🚀 Welcome to SmartAI Builder Pro</h1>
+        <p>Your AI-powered website builder is ready! Enter a prompt above and click "Generate Website" to create amazing websites instantly.</p>
+        <button class="btn" onclick="alert('Preview is working perfectly! 🎉')">Test Preview</button>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🎨 AI-Powered</h3>
+                <p>Describe your vision and let AI create it</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Instant</h3>
+                <p>Generate websites in seconds</p>
+            </div>
+            <div class="feature">
+                <h3>📱 Responsive</h3>
+                <p>Mobile-ready designs</p>
+            </div>
+        </div>
     </div>
 </body>
 </html>`;
     setEditorContent(sampleHTML);
     updatePreview(sampleHTML);
+  } else {
+    // If there's existing content, make sure preview is updated
+    const existingContent = getEditorContent();
+    updatePreview(existingContent);
   }
 });
 
@@ -321,8 +365,47 @@ function updatePreview(html) {
   console.log('updatePreview called with html length:', html ? html.length : 0); // Debug log
   
   if (!html || !html.trim()) {
-    console.log('No HTML content, clearing preview'); // Debug log
-    preview.src = 'about:blank';
+    console.log('No HTML content, loading default'); // Debug log
+    // Load default content instead of blank
+    const defaultHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAI Builder Preview</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0fdf4;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 { color: #333; margin-bottom: 1rem; }
+        p { color: #666; line-height: 1.6; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 SmartAI Builder Pro</h1>
+        <p>Ready to create! Enter your prompt and click "Generate Website".</p>
+    </div>
+</body>
+</html>`;
+    const blob = new Blob([defaultHTML], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    preview.src = url;
     return;
   }
   
@@ -332,7 +415,27 @@ function updatePreview(html) {
       URL.revokeObjectURL(preview.src);
     }
     
-    const blob = new Blob([html], { type: "text/html" });
+    // Ensure we have proper HTML - if it doesn't start with <!DOCTYPE or <html, wrap it
+    let processedHTML = html.trim();
+    if (!processedHTML.toLowerCase().startsWith('<!doctype') && 
+        !processedHTML.toLowerCase().startsWith('<html')) {
+      processedHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Content</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0fdf4; }
+    </style>
+</head>
+<body>
+    ${processedHTML}
+</body>
+</html>`;
+    }
+    
+    const blob = new Blob([processedHTML], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     preview.src = url;
     console.log('Preview updated successfully'); // Debug log
