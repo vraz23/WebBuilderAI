@@ -451,6 +451,44 @@ function refreshPreview() {
   
   if (!content.trim()) {
     showNotification('No HTML content to preview', 'warning');
+    // Load default content instead of leaving blank
+    const defaultHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAI Builder Preview</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0fdf4;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .message {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        h2 { color: #333; margin-bottom: 1rem; }
+        p { color: #666; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="message">
+        <h2>📝 No Content</h2>
+        <p>Enter a prompt and click "Generate Website" to see your AI-created website here!</p>
+    </div>
+</body>
+</html>`;
+    updatePreview(defaultHTML);
     return;
   }
   
